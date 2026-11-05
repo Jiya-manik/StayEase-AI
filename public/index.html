@@ -1,0 +1,2403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StayEase AI — Autonomous Luxury Hotel Booking & Operations Platform</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Leaflet Map CSS & JS for Interactive Google Mapping System -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#f7f9f6',
+              card: '#ffffff',
+              dark: '#1d2821',
+              heading: '#16201a',
+              muted: '#5e6c62',
+              lightMuted: '#8a998e',
+              accent: '#d8e6d2',
+              btnPrimary: '#cfdec8',
+              btnPrimaryHover: '#beceb6',
+              btnStaff: '#d1e2d4',
+              border: '#e4ece1',
+              borderDark: '#ccd7c8',
+              tag: '#4f6153'
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f7f9f6;
+      color: #1d2821;
+      scroll-behavior: smooth;
+    }
+
+    .font-serif {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    .arch-frame {
+      border-top-left-radius: 220px;
+      border-top-right-radius: 220px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .glass-badge {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f4ef;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #c3d2c0;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a9bca6;
+    }
+
+    /* ============================================================== */
+    /* DYNAMIC LUXURY ANIMATIONS SYSTEM */
+    /* ============================================================== */
+
+    /* 1. Floating Animation for Badges & Cards */
+    @keyframes floatSlow {
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-10px) rotate(0.5deg);
+      }
+    }
+
+    @keyframes floatReverse {
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(8px) rotate(-0.5deg);
+      }
+    }
+
+    .animate-float {
+      animation: floatSlow 6s ease-in-out infinite;
+    }
+
+    .animate-float-delayed {
+      animation: floatReverse 7s ease-in-out infinite 1s;
+    }
+
+    /* 2. Soft Ambient Gradient Aura Orbs */
+    @keyframes gradientFlow {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.45;
+      }
+
+      50% {
+        transform: translate(25px, -20px) scale(1.12);
+        opacity: 0.65;
+      }
+    }
+
+    .ambient-orb-1 {
+      animation: gradientFlow 10s ease-in-out infinite;
+    }
+
+    .ambient-orb-2 {
+      animation: gradientFlow 12s ease-in-out infinite reverse;
+    }
+
+    /* 3. Shimmer Sweep Effect */
+    @keyframes shimmerSweep {
+      0% {
+        transform: translateX(-150%) skewX(-20deg);
+      }
+
+      100% {
+        transform: translateX(250%) skewX(-20deg);
+      }
+    }
+
+    .shimmer-hover {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-hover::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
+      transform: translateX(-150%) skewX(-20deg);
+      pointer-events: none;
+    }
+
+    .shimmer-hover:hover::after {
+      animation: shimmerSweep 1.2s ease-in-out;
+    }
+
+    /* 4. Luxury Card 3D Lift & Elevation */
+    .luxury-card-motion {
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, box-shadow;
+    }
+
+    .luxury-card-motion:hover {
+      transform: translateY(-8px) scale(1.012);
+      box-shadow: 0 24px 48px -12px rgba(22, 32, 26, 0.12), 0 8px 16px -4px rgba(22, 32, 26, 0.06);
+      border-color: #ccd7c8;
+    }
+
+    /* 5. Scroll Reveal Staggered Animations */
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal-on-scroll.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 6. Glowing Breathing Pulse */
+    @keyframes pulseGlow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(79, 97, 83, 0.25);
+      }
+
+      50% {
+        box-shadow: 0 0 0 8px rgba(79, 97, 83, 0);
+      }
+    }
+
+    .pulse-aura {
+      animation: pulseGlow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    /* 7. Modal Entrance Animation */
+    @keyframes modalScaleIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.93) translateY(16px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-animated>div {
+      animation: modalScaleIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* 8. AI Soundwave Waveform Visualizer */
+    @keyframes waveBarBounce {
+
+      0%,
+      100% {
+        height: 6px;
+      }
+
+      50% {
+        height: 22px;
+      }
+    }
+
+    .wave-bar {
+      display: inline-block;
+      width: 3.5px;
+      background: #4f6153;
+      border-radius: 3px;
+      margin: 0 1.5px;
+      animation: waveBarBounce 1.2s ease-in-out infinite;
+    }
+
+    .wave-bar:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .wave-bar:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .wave-bar:nth-child(4) {
+      animation-delay: 0.45s;
+    }
+
+    .wave-bar:nth-child(5) {
+      animation-delay: 0.6s;
+    }
+
+    /* 9. Floating Live Autonomous Toast */
+    @keyframes toastSlide {
+      0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.92);
+      }
+
+      10% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      90% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.92);
+      }
+    }
+
+    .animate-toast {
+      animation: toastSlide 7.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+      #printableInvoice,
+      #printableInvoice * {
+        visibility: visible;
+      }
+
+      #printableInvoice {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+      }
+    }
+
+    /* Leaflet Google-Style Interactive Mapping Customization */
+    .leaflet-container {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      border-radius: 1rem;
+    }
+    .stayease-pin-hotel {
+      background: #1d2821;
+      color: #d8e6d2;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+    .stayease-pin-user {
+      background: #2563eb;
+      color: white;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.35);
+      animation: pulseGlow 2s infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .stayease-pin-place {
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .stayease-pin-place:hover {
+      transform: scale(1.22);
+      z-index: 1000 !important;
+    }
+    .leaflet-popup-content-wrapper {
+      border-radius: 1.25rem !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.05) !important;
+      border: 1px solid #e4ece1 !important;
+      background: #ffffff !important;
+    }
+    .leaflet-popup-content {
+      margin: 0 !important;
+      line-height: 1.4 !important;
+    }
+    .leaflet-popup-tip {
+      background: #ffffff !important;
+    }
+    .place-cat-pill.active {
+      background-color: #1d2821 !important;
+      color: #ffffff !important;
+      border-color: #1d2821 !important;
+    }
+  </style>
+</head>
+
+<body class="bg-brand-bg text-brand-dark min-h-screen flex flex-col antialiased selection:bg-brand-accent">
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-brand-dark text-stone-200 text-xs py-2 px-4 border-b border-stone-800">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="font-medium">StayEase Autonomous Platform Active — Multi-Agent AI System Live</span>
+      </div>
+      <div class="flex items-center gap-4 text-[11px] text-stone-300">
+        <span class="hidden md:inline"><i class="fa-solid fa-phone mr-1"></i> +91 (022) 8000-EASE</span>
+        <div class="flex items-center gap-2">
+          <span>Quick Demo:</span>
+          <button onclick="quickLoginGuest()"
+            class="bg-stone-800 hover:bg-stone-700 text-emerald-300 px-2.5 py-0.5 rounded text-[11px] font-medium border border-stone-700 transition">
+            Guest (Priya)
+          </button>
+          <button onclick="quickLoginAdmin()"
+            class="bg-stone-800 hover:bg-stone-700 text-amber-300 px-2.5 py-0.5 rounded text-[11px] font-medium border border-stone-700 transition">
+            Admin Console
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation Header -->
+  <header class="sticky top-0 z-40 bg-brand-bg/95 backdrop-blur-md border-b border-brand-border/70 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-3.5 flex items-center justify-between">
+
+      <!-- Brand Logo -->
+      <a href="#" class="group flex flex-col">
+        <span
+          class="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-brand-heading group-hover:text-black transition">StayEase</span>
+        <span class="text-[9px] tracking-[0.25em] font-bold text-brand-tag uppercase -mt-1">AUTONOMOUS AI
+          HOSPITALITY</span>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden lg:flex items-center space-x-7 text-sm font-medium text-brand-muted">
+        <a href="#home" class="hover:text-brand-dark transition-colors py-1">Home</a>
+        <a href="#rooms" class="hover:text-brand-dark transition-colors py-1">Explore Rooms</a>
+        <a href="#concierge" class="hover:text-brand-dark transition-colors py-1">AI Concierge</a>
+        <a href="#nearby" class="hover:text-brand-dark transition-colors py-1 flex items-center gap-1.5">
+          <i class="fa-solid fa-map-location-dot text-xs text-amber-700"></i>
+          <span>Nearby & Maps</span>
+        </a>
+        <a href="#amenities" class="hover:text-brand-dark transition-colors py-1">Amenities</a>
+        <a href="#reviews" class="hover:text-brand-dark transition-colors py-1">Reviews</a>
+        <button onclick="openCustomerPortal('bookings')"
+          class="hover:text-brand-dark transition-colors py-1 flex items-center gap-1.5">
+          <i class="fa-solid fa-calendar-check text-xs text-brand-tag"></i>
+          <span>My Bookings</span>
+        </button>
+      </nav>
+
+      <!-- Right Action Pill / User Profile -->
+      <div class="flex items-center space-x-3">
+        <!-- Auth Button Container -->
+        <div id="navAuthContainer" class="flex items-center gap-2">
+          <button onclick="openAuthModal('login')"
+            class="text-xs font-semibold text-brand-dark hover:text-black px-3 py-2">
+            Sign In
+          </button>
+          <button onclick="openAuthModal('register')"
+            class="bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark px-4 py-2 rounded-full font-semibold text-xs transition shadow-sm">
+            Register
+          </button>
+        </div>
+
+        <!-- Logged-in User Profile Pill (Hidden initially) -->
+        <div id="navUserContainer" class="hidden items-center gap-2">
+          <button onclick="openCustomerPortal('overview')"
+            class="flex items-center gap-2 bg-white border border-brand-border hover:border-brand-borderDark px-3.5 py-1.5 rounded-full text-xs font-semibold text-brand-dark shadow-sm transition">
+            <span
+              class="w-6 h-6 rounded-full bg-brand-accent flex items-center justify-center text-[10px] font-bold text-brand-dark"
+              id="navUserInitial">P</span>
+            <span id="navUserName">Priya Nair</span>
+            <span id="navUserRoleBadge"
+              class="bg-emerald-100 text-emerald-800 text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase">Guest</span>
+          </button>
+          <button onclick="handleLogout()" title="Sign Out"
+            class="text-brand-muted hover:text-rose-600 p-2 text-sm transition">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </button>
+        </div>
+
+        <!-- Admin Console Quick Launcher (Visible for staff/admins or on demand) -->
+        <button id="navAdminBtn" onclick="openAdminConsole()"
+          class="bg-brand-dark hover:bg-black text-white px-4 py-2 rounded-full font-semibold text-xs transition flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-shield-halved text-amber-400 text-xs"></i>
+          <span>Admin Center</span>
+        </button>
+
+        <!-- Mobile Menu Trigger -->
+        <button onclick="toggleMobileMenu()" class="lg:hidden text-brand-dark p-2" aria-label="Toggle Navigation">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobileMenu" class="hidden lg:hidden bg-brand-bg border-b border-brand-border px-6 py-4 space-y-3">
+      <a href="#home" onclick="toggleMobileMenu()"
+        class="block text-brand-muted font-medium hover:text-brand-dark py-1">Home</a>
+      <a href="#rooms" onclick="toggleMobileMenu()"
+        class="block text-brand-muted font-medium hover:text-brand-dark py-1">Explore Rooms</a>
+      <a href="#concierge" onclick="toggleMobileMenu()"
+        class="block text-brand-muted font-medium hover:text-brand-dark py-1">AI Concierge</a>
+      <a href="#nearby" onclick="toggleMobileMenu()"
+        class="block text-brand-muted font-medium hover:text-brand-dark py-1 flex items-center gap-2">
+        <i class="fa-solid fa-map-location-dot text-amber-700"></i> Nearby & Maps
+      </a>
+      <a href="#amenities" onclick="toggleMobileMenu()"
+        class="block text-brand-muted font-medium hover:text-brand-dark py-1">Amenities</a>
+      <a href="#reviews" onclick="toggleMobileMenu()"
+        class="block text-brand-muted font-medium hover:text-brand-dark py-1">Reviews</a>
+      <button onclick="toggleMobileMenu(); openCustomerPortal('bookings');"
+        class="w-full text-left text-brand-muted font-medium hover:text-brand-dark py-1">My Bookings & Portal</button>
+      <button onclick="toggleMobileMenu(); openAdminConsole();"
+        class="w-full bg-brand-dark text-white py-2 rounded-full font-semibold text-xs flex items-center justify-center gap-2">
+        <i class="fa-solid fa-shield-halved text-amber-400"></i> Open Admin Center
+      </button>
+    </div>
+  </header>
+
+  <!-- SECTION 1: HERO & INTEGRATED SEARCH WIDGET -->
+  <section id="home" class="relative overflow-hidden pt-8 pb-16 md:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+
+    <!-- Ambient Floating Luxury Glow Orbs -->
+    <div
+      class="absolute -top-20 -left-20 w-80 h-80 bg-brand-accent/50 rounded-full blur-3xl pointer-events-none ambient-orb-1 -z-10">
+    </div>
+    <div
+      class="absolute top-1/2 -right-24 w-80 h-80 bg-amber-100/50 rounded-full blur-3xl pointer-events-none ambient-orb-2 -z-10">
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+
+      <!-- Left Column: Copy & Actions -->
+      <div class="lg:col-span-7 space-y-6 reveal-on-scroll">
+
+        <div
+          class="inline-flex items-center gap-2 bg-brand-accent/60 border border-brand-borderDark/60 px-3.5 py-1.5 rounded-full pulse-aura">
+          <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
+          <span class="text-[10px] font-bold tracking-[0.2em] text-brand-tag uppercase">
+            AUTONOMOUS HOSPITALITY PLATFORM
+          </span>
+        </div>
+
+        <h1
+          class="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-[1.08] font-normal text-brand-heading">
+          Hospitality, <br />
+          guided by <br />
+          <span class="italic font-serif font-normal text-brand-dark">intelligence.</span>
+        </h1>
+
+        <p class="text-brand-muted text-base sm:text-lg leading-relaxed max-w-xl">
+          StayEase pairs timeless luxury with an autonomous multi-agent AI concierge, personalized room recommendations,
+          dynamic pricing, and automated operational orchestration.
+        </p>
+
+        <!-- CTA Action Buttons -->
+        <div class="flex flex-wrap items-center gap-4 pt-1">
+          <a href="#rooms"
+            class="shimmer-hover bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark px-7 py-3.5 rounded-full font-semibold text-sm transition shadow-sm hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center">
+            Browse Real Rooms
+          </a>
+          <button onclick="openAIModal('concierge')"
+            class="bg-white hover:bg-stone-50 border border-brand-borderDark text-brand-dark px-6 py-3.5 rounded-full font-semibold text-sm transition shadow-sm hover:shadow-md transform hover:-translate-y-0.5 flex items-center gap-2">
+            <i class="fa-solid fa-wand-magic-sparkles text-emerald-700"></i>
+            <span>Meet AI Concierge</span>
+          </button>
+          <button onclick="openAIModal('planner')"
+            class="bg-brand-bg hover:bg-brand-accent/50 border border-brand-border text-brand-dark px-5 py-3.5 rounded-full font-medium text-xs transition transform hover:-translate-y-0.5">
+            <i class="fa-regular fa-compass mr-1"></i> Plan Itinerary
+          </button>
+        </div>
+
+        <!-- 3 Metrics Bar with Animated Counters -->
+        <div class="grid grid-cols-3 gap-3 sm:gap-4 pt-4 max-w-lg">
+          <div class="bg-white border border-brand-border p-4 rounded-2xl text-center shadow-sm luxury-card-motion">
+            <div class="font-serif text-2xl sm:text-3xl text-brand-heading font-medium counter-stat" data-target="10">0
+            </div>
+            <div class="text-[9px] sm:text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mt-1">AI
+              AGENTS ACTIVE</div>
+          </div>
+          <div class="bg-white border border-brand-border p-4 rounded-2xl text-center shadow-sm luxury-card-motion">
+            <div class="font-serif text-2xl sm:text-3xl text-brand-heading font-medium counter-stat" data-target="100"
+              data-suffix="%">0%</div>
+            <div class="text-[9px] sm:text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mt-1">
+              GROUNDED IN DATA</div>
+          </div>
+          <div class="bg-white border border-brand-border p-4 rounded-2xl text-center shadow-sm luxury-card-motion">
+            <div class="font-serif text-2xl sm:text-3xl text-brand-heading font-medium counter-stat" data-target="4.9"
+              data-decimals="1" data-suffix="/5">0/5</div>
+            <div class="text-[9px] sm:text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mt-1">GUEST
+              SATISFACTION</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Arch Frame Photo with Smooth Float -->
+      <div class="lg:col-span-5 flex justify-center lg:justify-end reveal-on-scroll">
+        <div class="relative w-full max-w-md">
+          <div class="arch-frame aspect-[4/5] bg-stone-200 border border-brand-border shadow-2xl">
+            <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=1200"
+              alt="StayEase Luxury Suite"
+              class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700" />
+          </div>
+
+          <div
+            class="absolute bottom-6 -right-2 sm:right-4 glass-badge border border-brand-border/80 p-4 rounded-2xl shadow-xl max-w-[280px] flex items-center gap-3 animate-float">
+            <div
+              class="w-10 h-10 rounded-full bg-brand-accent flex items-center justify-center shrink-0 text-brand-dark">
+              <i class="fa-solid fa-bell-concierge text-base"></i>
+            </div>
+            <div>
+              <p class="text-xs text-brand-dark font-semibold leading-tight">Autonomous Service Desk</p>
+              <p class="text-[11px] text-brand-muted mt-0.5">Auto-triaging requests &amp; assigning staff 24/7</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Live Hotel Search & Availability Bar -->
+    <div class="mt-12 bg-white border border-brand-border p-5 sm:p-6 rounded-3xl shadow-lg">
+      <form id="heroSearchForm" onsubmit="handleHeroSearch(event)"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+
+        <div>
+          <label class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1.5">
+            <i class="fa-regular fa-calendar-check mr-1"></i> CHECK-IN
+          </label>
+          <input type="date" id="heroCheckIn" required
+            class="w-full bg-brand-bg/60 border border-brand-border rounded-xl px-3.5 py-2.5 text-xs font-medium text-brand-dark focus:outline-none focus:border-brand-borderDark focus:bg-white transition" />
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1.5">
+            <i class="fa-regular fa-calendar-xmark mr-1"></i> CHECK-OUT
+          </label>
+          <input type="date" id="heroCheckOut" required
+            class="w-full bg-brand-bg/60 border border-brand-border rounded-xl px-3.5 py-2.5 text-xs font-medium text-brand-dark focus:outline-none focus:border-brand-borderDark focus:bg-white transition" />
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1.5">
+            <i class="fa-solid fa-user-group mr-1"></i> GUESTS
+          </label>
+          <select id="heroGuests"
+            class="w-full bg-brand-bg/60 border border-brand-border rounded-xl px-3.5 py-2.5 text-xs font-medium text-brand-dark focus:outline-none focus:border-brand-borderDark focus:bg-white transition">
+            <option value="1">1 Guest</option>
+            <option value="2" selected>2 Guests</option>
+            <option value="3">3 Guests</option>
+            <option value="4">4+ Guests</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1.5">
+            <i class="fa-solid fa-bed mr-1"></i> CATEGORY
+          </label>
+          <select id="heroCategory"
+            class="w-full bg-brand-bg/60 border border-brand-border rounded-xl px-3.5 py-2.5 text-xs font-medium text-brand-dark focus:outline-none focus:border-brand-borderDark focus:bg-white transition">
+            <option value="ALL">All Categories</option>
+            <option value="STANDARD">Standard</option>
+            <option value="DELUXE">Deluxe</option>
+            <option value="SUITE">Suite</option>
+          </select>
+        </div>
+
+        <div>
+          <button type="submit"
+            class="w-full bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark font-semibold py-2.5 px-4 rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-2 h-[38px]">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Check Availability</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </section>
+
+  <!-- SECTION 2: ROOMS & SUITES (LIVE MONGODB INVENTORY) -->
+  <section id="rooms" class="py-16 md:py-24 border-t border-brand-border/60 bg-white/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+
+      <!-- Section Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+        <div>
+          <div class="text-xs font-bold tracking-[0.2em] text-brand-tag uppercase mb-2">
+            ROOMS & SUITES
+          </div>
+          <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-brand-heading leading-tight">
+            Curated sanctuary, tailored comfort.
+          </h2>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="openAIModal('recommendations')"
+            class="bg-white border border-brand-borderDark px-4 py-2 rounded-full text-xs font-semibold text-brand-dark hover:bg-brand-bg transition flex items-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-sparkles text-amber-600"></i> AI Match Recommender
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters & Sorting Bar -->
+      <div
+        class="bg-white border border-brand-border p-4 rounded-2xl shadow-sm mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+
+        <!-- Category Filter Pills -->
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="filterRoomsByCategory('ALL')" id="tabCatAll"
+            class="room-cat-tab bg-brand-dark text-white px-4 py-1.5 rounded-full text-xs font-semibold transition">
+            All Suites
+          </button>
+          <button onclick="filterRoomsByCategory('STANDARD')" id="tabCatStandard"
+            class="room-cat-tab bg-brand-bg hover:bg-brand-border text-brand-muted px-4 py-1.5 rounded-full text-xs font-medium transition">
+            Standard
+          </button>
+          <button onclick="filterRoomsByCategory('DELUXE')" id="tabCatDeluxe"
+            class="room-cat-tab bg-brand-bg hover:bg-brand-border text-brand-muted px-4 py-1.5 rounded-full text-xs font-medium transition">
+            Deluxe
+          </button>
+          <button onclick="filterRoomsByCategory('SUITE')" id="tabCatSuite"
+            class="room-cat-tab bg-brand-bg hover:bg-brand-border text-brand-muted px-4 py-1.5 rounded-full text-xs font-medium transition">
+            Presidential Suites
+          </button>
+        </div>
+
+        <!-- Search & Sort Controls -->
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <div class="relative flex-1 md:w-56">
+            <i class="fa-solid fa-search absolute left-3 top-2.5 text-xs text-brand-lightMuted"></i>
+            <input type="text" id="roomSearchInput" placeholder="Search amenities or name..."
+              oninput="handleRoomSearch(this.value)"
+              class="w-full pl-8 pr-3 py-1.5 bg-brand-bg border border-brand-border rounded-full text-xs text-brand-dark focus:outline-none focus:border-brand-borderDark" />
+          </div>
+          <select id="roomSortSelect" onchange="handleRoomSort(this.value)"
+            class="bg-brand-bg border border-brand-border rounded-full px-3 py-1.5 text-xs text-brand-dark focus:outline-none font-medium">
+            <option value="featured">Featured</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+            <option value="capacity">Largest Capacity</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Real Rooms Grid (Populated dynamically from MongoDB) -->
+      <div id="roomsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <!-- Loading State Skeleton -->
+        <div class="col-span-full py-12 text-center text-brand-muted">
+          <i class="fa-solid fa-circle-notch fa-spin text-2xl text-brand-tag mb-3"></i>
+          <p class="text-sm font-medium">Loading live room inventory from database...</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 3: 10 AUTONOMOUS AI CAPABILITIES SHOWCASE -->
+  <section id="concierge" class="py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <div class="max-w-xl">
+        <div class="text-xs font-bold tracking-[0.2em] text-brand-tag uppercase mb-2">
+          MULTI-AGENT ORCHESTRATION
+        </div>
+        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-brand-heading leading-tight">
+          Ten autonomous agents working in harmony.
+        </h2>
+      </div>
+      <p class="text-brand-muted text-sm sm:text-base max-w-md leading-relaxed">
+        From natural-language guest concierge to dynamic rate optimization and automated housekeeping dispatch, every
+        decision is grounded in real operational data.
+      </p>
+    </div>
+
+    <!-- 4 Feature Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+
+      <div onclick="openAIModal('concierge')"
+        class="cursor-pointer bg-white border border-brand-border p-6 rounded-3xl shadow-sm hover:border-brand-borderDark hover:shadow-md transition group">
+        <div
+          class="w-10 h-10 rounded-full bg-brand-bg flex items-center justify-center text-brand-dark mb-4 text-sm group-hover:bg-brand-accent transition">
+          <i class="fa-regular fa-comment-dots text-emerald-800"></i>
+        </div>
+        <span class="text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase block mb-1">AGENT 01</span>
+        <h3 class="font-serif text-lg font-medium text-brand-heading mb-2">24/7 AI Concierge</h3>
+        <p class="text-xs text-brand-muted leading-relaxed">
+          Grounded guest advice, dining reservations, spa slots, and verified policy guidance without hallucination.
+        </p>
+      </div>
+
+      <div onclick="openAIModal('planner')"
+        class="cursor-pointer bg-white border border-brand-border p-6 rounded-3xl shadow-sm hover:border-brand-borderDark hover:shadow-md transition group">
+        <div
+          class="w-10 h-10 rounded-full bg-brand-bg flex items-center justify-center text-brand-dark mb-4 text-sm group-hover:bg-brand-accent transition">
+          <i class="fa-solid fa-map-location-dot text-emerald-800"></i>
+        </div>
+        <span class="text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase block mb-1">AGENT 02</span>
+        <h3 class="font-serif text-lg font-medium text-brand-heading mb-2">Personal Travel Planner</h3>
+        <p class="text-xs text-brand-muted leading-relaxed">
+          Generates itemized day-by-day itineraries with verified hotel room pricing, excursions, and dining estimates.
+        </p>
+      </div>
+
+      <div onclick="openAIModal('booking')"
+        class="cursor-pointer bg-white border border-brand-border p-6 rounded-3xl shadow-sm hover:border-brand-borderDark hover:shadow-md transition group">
+        <div
+          class="w-10 h-10 rounded-full bg-brand-bg flex items-center justify-center text-brand-dark mb-4 text-sm group-hover:bg-brand-accent transition">
+          <i class="fa-solid fa-calendar-check text-emerald-800"></i>
+        </div>
+        <span class="text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase block mb-1">AGENT 03</span>
+        <h3 class="font-serif text-lg font-medium text-brand-heading mb-2">Smart Booking Assistant</h3>
+        <p class="text-xs text-brand-muted leading-relaxed">
+          Detects date conflicts, validates guests, prepares pricing breakdowns, and asks for confirmation before
+          checkout.
+        </p>
+      </div>
+
+      <div onclick="openAIModal('recommendations')"
+        class="cursor-pointer bg-white border border-brand-border p-6 rounded-3xl shadow-sm hover:border-brand-borderDark hover:shadow-md transition group">
+        <div
+          class="w-10 h-10 rounded-full bg-brand-bg flex items-center justify-center text-brand-dark mb-4 text-sm group-hover:bg-brand-accent transition">
+          <i class="fa-solid fa-sliders text-emerald-800"></i>
+        </div>
+        <span class="text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase block mb-1">AGENT 04</span>
+        <h3 class="font-serif text-lg font-medium text-brand-heading mb-2">Recommendation Engine</h3>
+        <p class="text-xs text-brand-muted leading-relaxed">
+          Hybrid scoring matching guest budgets, previous stays, amenities, and real-time inventory availability.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Action Buttons Row -->
+    <div class="flex flex-wrap items-center gap-4">
+      <button onclick="openAIModal('concierge')"
+        class="bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark px-6 py-3 rounded-full font-semibold text-xs transition shadow-sm flex items-center gap-2">
+        <span>🌿 Launch AI Concierge Console</span>
+      </button>
+      <button onclick="openAdminConsole()"
+        class="bg-white border border-brand-borderDark hover:bg-gray-50 text-brand-dark px-6 py-3 rounded-full font-semibold text-xs transition shadow-sm flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-amber-500"></i>
+        <span>Open Admin Operations Center</span>
+      </button>
+      <a href="#nearby"
+        class="bg-brand-dark hover:bg-black text-white px-6 py-3 rounded-full font-semibold text-xs transition shadow-sm flex items-center gap-2">
+        <i class="fa-solid fa-map-location-dot text-amber-400"></i>
+        <span>Explore Nearby & Interactive Maps</span>
+      </a>
+    </div>
+
+  </section>
+
+  <!-- SECTION: REAL-TIME LOCATION, LOCAL SHOPS & CAFES, AND GOOGLE MAPPING SYSTEM -->
+  <section id="nearby" class="py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 border-t border-brand-border/60">
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+      <div class="max-w-2xl">
+        <div class="flex items-center gap-2 text-xs font-bold tracking-[0.2em] text-brand-tag uppercase mb-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          REAL-TIME LOCATION APIS & LOCAL DISCOVERY
+        </div>
+        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-brand-heading leading-tight">
+          Curated neighborhood gems & interactive Google mapping.
+        </h2>
+        <p class="text-brand-muted text-sm sm:text-base mt-2 leading-relaxed">
+          Explore artisanal roasteries, heritage boutiques, seaside bistros, and historic monuments — with live walking distance calculations, interactive map pins, and Google Gemini recommendations.
+        </p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <!-- Live Gemini Badge -->
+        <div class="bg-white border border-brand-border px-3.5 py-2 rounded-2xl shadow-sm flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 text-xs font-bold">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div>
+            <div class="text-[11px] font-bold text-brand-heading flex items-center gap-1.5">
+              <span>Google Gemini AI</span>
+              <span id="geminiStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            </div>
+            <div id="geminiStatusText" class="text-[10px] text-brand-muted">Real-Time Recommendations Active</div>
+          </div>
+        </div>
+
+        <!-- Live Geolocation Trigger -->
+        <button onclick="detectUserLocation()" id="locateMeBtn"
+          class="bg-brand-dark hover:bg-black text-white px-4 py-2.5 rounded-2xl text-xs font-semibold flex items-center gap-2 shadow-sm transition">
+          <i class="fa-solid fa-location-crosshairs text-emerald-400"></i>
+          <span id="locateMeBtnText">Detect My Live GPS Location</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Geolocation Live Banner Bar -->
+    <div id="liveLocationBanner" class="bg-gradient-to-r from-emerald-50 via-teal-50 to-stone-50 border border-emerald-200/80 rounded-2xl p-4 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 text-sm flex-shrink-0">
+          <i class="fa-solid fa-map-pin"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-emerald-900 uppercase tracking-wider">StayEase Anchor Location</span>
+            <span class="bg-emerald-200 text-emerald-800 text-[9px] font-bold px-2 py-0.5 rounded-full">Apollo Bunder, Colaba Waterfront</span>
+          </div>
+          <p id="userDistanceDisplay" class="text-xs text-stone-700 font-medium mt-0.5">
+            Defaulting to hotel grounds. Click <strong>"Detect My Live GPS Location"</strong> to calculate real-time walking times and driving routes from your current spot!
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 flex-wrap text-xs">
+        <span class="bg-white/80 border border-emerald-200 px-3 py-1.5 rounded-xl font-medium text-stone-700">
+          <i class="fa-solid fa-hotel text-amber-700 mr-1.5"></i>18.9220° N, 72.8347° E
+        </span>
+        <button onclick="centerMapOnHotel()" class="bg-white hover:bg-emerald-100/60 border border-emerald-200 text-emerald-900 px-3 py-1.5 rounded-xl font-semibold transition">
+          Center Hotel
+        </button>
+      </div>
+    </div>
+
+    <!-- Interactive Google Mapping System Card -->
+    <div class="bg-white border border-brand-border rounded-3xl p-4 sm:p-6 shadow-sm mb-10">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        <div>
+          <h3 class="font-serif text-xl font-medium text-brand-heading flex items-center gap-2">
+            <span>Interactive Precinct Map</span>
+            <span class="text-[10px] bg-brand-accent/80 text-brand-dark px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Google Maps & GPS Integrated</span>
+          </h3>
+          <p class="text-xs text-brand-muted mt-0.5">Click any pin to inspect the boutique, cafe or landmark, check opening hours, or launch instant Google Maps turn-by-turn navigation.</p>
+        </div>
+        <!-- Map Style / Reset Controls -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <div class="bg-brand-bg p-1 rounded-full border border-brand-border flex text-[11px] font-semibold">
+            <button onclick="setMapTileStyle('streets')" id="mapBtnStreets" class="bg-brand-dark text-white px-3 py-1 rounded-full transition">Street View</button>
+            <button onclick="setMapTileStyle('satellite')" id="mapBtnSatellite" class="text-brand-muted hover:text-brand-dark px-3 py-1 rounded-full transition">Warm Voyager</button>
+          </div>
+          <button onclick="centerMapOnHotel()" title="Reset Map to Hotel" class="w-8 h-8 rounded-full bg-brand-bg border border-brand-border flex items-center justify-center text-brand-dark hover:bg-brand-accent transition text-xs">
+            <i class="fa-solid fa-hotel"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Map Canvas -->
+      <div class="relative w-full h-[440px] sm:h-[480px] rounded-2xl overflow-hidden border border-brand-border shadow-inner">
+        <div id="stayEaseMap" class="w-full h-full z-10"></div>
+        <!-- Floating Map Legend -->
+        <div class="absolute bottom-4 left-4 z-20 bg-white/95 backdrop-blur-md border border-brand-border rounded-xl p-2.5 shadow-lg text-[11px] font-medium flex flex-wrap items-center gap-3">
+          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-stone-900 border border-white"></span> StayEase Hotel</span>
+          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-500 border border-white"></span> Cafes & Bakeries</span>
+          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-600 border border-white"></span> Boutiques & Shops</span>
+          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-rose-600 border border-white"></span> Coastal Dining</span>
+          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-indigo-600 border border-white"></span> Culture & Landmarks</span>
+          <span id="legendUserLocation" class="hidden items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue-600 animate-ping"></span> You</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Filters & Search Toolbar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <!-- Category Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none" id="placeCategoryPills">
+        <button onclick="filterNearbyPlaces('all')" class="place-cat-pill active bg-brand-dark text-white px-4 py-2 rounded-full text-xs font-semibold transition whitespace-nowrap shadow-sm" data-category="all">
+          All Spots (<span id="countAll">14</span>)
+        </button>
+        <button onclick="filterNearbyPlaces('cafe')" class="place-cat-pill bg-white border border-brand-border hover:border-brand-borderDark text-brand-dark px-4 py-2 rounded-full text-xs font-semibold transition whitespace-nowrap" data-category="cafe">
+          ☕ Artisan Cafes (<span id="countCafe">4</span>)
+        </button>
+        <button onclick="filterNearbyPlaces('shop')" class="place-cat-pill bg-white border border-brand-border hover:border-brand-borderDark text-brand-dark px-4 py-2 rounded-full text-xs font-semibold transition whitespace-nowrap" data-category="shop">
+          🛍️ Boutiques & Shops (<span id="countShop">4</span>)
+        </button>
+        <button onclick="filterNearbyPlaces('restaurant')" class="place-cat-pill bg-white border border-brand-border hover:border-brand-borderDark text-brand-dark px-4 py-2 rounded-full text-xs font-semibold transition whitespace-nowrap" data-category="restaurant">
+          🍽️ Fine Dining (<span id="countRestaurant">3</span>)
+        </button>
+        <button onclick="filterNearbyPlaces('culture')" class="place-cat-pill bg-white border border-brand-border hover:border-brand-borderDark text-brand-dark px-4 py-2 rounded-full text-xs font-semibold transition whitespace-nowrap" data-category="culture">
+          🏛️ Heritage & Culture (<span id="countCulture">3</span>)
+        </button>
+      </div>
+
+      <!-- Distance and Search Inputs -->
+      <div class="flex items-center gap-3">
+        <div class="relative w-full sm:w-60">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-brand-lightMuted text-xs"></i>
+          <input type="text" id="nearbySearchInput" placeholder="Search cafes, silk, crab..." oninput="handleNearbySearch(this.value)"
+            class="w-full bg-white border border-brand-border pl-9 pr-3 py-2 rounded-full text-xs text-brand-dark focus:outline-none focus:border-brand-dark transition" />
+        </div>
+        <select id="nearbyMaxDistSelect" onchange="handleNearbyDistanceChange(this.value)"
+          class="bg-white border border-brand-border px-3 py-2 rounded-full text-xs font-semibold text-brand-dark focus:outline-none">
+          <option value="">Any Distance</option>
+          <option value="0.5">Under 500m (Walking)</option>
+          <option value="1.0">Under 1 km</option>
+          <option value="2.0">Under 2 km</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Gemini AI Local Guide Consultation Box -->
+    <div class="bg-gradient-to-br from-stone-900 to-stone-800 text-white rounded-3xl p-6 sm:p-8 mb-10 shadow-xl border border-stone-700 relative overflow-hidden">
+      <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 mb-6">
+        <div>
+          <div class="flex items-center gap-2 text-indigo-300 text-xs font-bold tracking-widest uppercase mb-1">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>Google Gemini 2.5 Flash Local Concierge</span>
+          </div>
+          <h3 class="font-serif text-2xl sm:text-3xl font-medium text-white">
+            Ask Gemini for bespoke neighborhood advice.
+          </h3>
+          <p class="text-stone-300 text-xs sm:text-sm mt-1 max-w-xl">
+            Get personalized walking itineraries, secret dishes, and recommendations tailored to your mood and schedule.
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Prompt Chips -->
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <button onclick="setGeminiPrompt('Where can I get the best artisanal pour-over coffee and fresh sourdough bakery within a 5-minute morning walk?')"
+          class="bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-600/80 px-3 py-1.5 rounded-full text-xs transition">
+          ☕ Best coffee & sourdough walk
+        </button>
+        <button onclick="setGeminiPrompt('I am looking for genuine handwoven cashmere pashmina and artisan jewelry gifts near the hotel.')"
+          class="bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-600/80 px-3 py-1.5 rounded-full text-xs transition">
+          🛍️ Cashmere & heirloom jewelry
+        </button>
+        <button onclick="setGeminiPrompt('Suggest a romantic sunset dinner with coastal seafood within walking distance.')"
+          class="bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-600/80 px-3 py-1.5 rounded-full text-xs transition">
+          🦞 Romantic sunset seafood dinner
+        </button>
+        <button onclick="setGeminiPrompt('Plan a 2-hour morning cultural walking tour of historic architecture starting from StayEase.')"
+          class="bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-600/80 px-3 py-1.5 rounded-full text-xs transition">
+          🏛️ 2-hour historic architectural walk
+        </button>
+      </div>
+
+      <!-- Input and Ask Button -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div class="relative flex-1">
+          <input type="text" id="geminiGuideInput" placeholder="Ask anything: 'Quiet reading cafe with outdoor garden', 'Authentic butter garlic crab'..."
+            onkeydown="if(event.key === 'Enter') triggerGeminiLocalGuide()"
+            class="w-full bg-stone-800/90 border border-stone-600 px-4 py-3 rounded-2xl text-xs sm:text-sm text-white placeholder-stone-400 focus:outline-none focus:border-indigo-400" />
+        </div>
+        <button onclick="triggerGeminiLocalGuide()" id="geminiGuideSubmitBtn"
+          class="bg-gradient-to-r from-emerald-400 to-teal-300 hover:from-emerald-300 hover:to-teal-200 text-stone-900 px-6 py-3 rounded-2xl font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-md">
+          <i class="fa-solid fa-wand-magic-sparkles text-stone-900"></i>
+          <span>Ask Gemini Guide</span>
+        </button>
+      </div>
+
+      <!-- Live Gemini Guide Output Container -->
+      <div id="geminiGuideOutput" class="hidden mt-6 bg-stone-800/80 border border-stone-700 rounded-2xl p-5 text-stone-200 text-xs sm:text-sm leading-relaxed">
+        <div class="flex items-center justify-between pb-3 mb-3 border-b border-stone-700">
+          <div class="flex items-center gap-2 text-xs font-bold text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="geminiOutputModelBadge">Google Gemini 2.5 Flash Response</span>
+          </div>
+          <button onclick="document.getElementById('geminiGuideOutput').classList.add('hidden')" class="text-stone-400 hover:text-white text-xs">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div id="geminiOutputContent" class="space-y-2 whitespace-pre-wrap"></div>
+      </div>
+    </div>
+
+    <!-- Places Grid (Populated dynamically from Location API) -->
+    <div id="nearbyPlacesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+      <!-- Loading state -->
+      <div class="col-span-full py-12 text-center text-brand-muted">
+        <i class="fa-solid fa-circle-notch fa-spin text-2xl text-brand-tag mb-3"></i>
+        <p class="text-sm font-medium">Discovering nearby cafes, shops, and heritage spots...</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- SECTION 4: HOTEL AMENITIES -->
+  <section id="amenities" class="py-16 md:py-24 border-t border-brand-border/60 bg-white/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+        <div class="lg:col-span-7 space-y-8">
+          <div>
+            <div class="text-xs font-bold tracking-[0.2em] text-brand-tag uppercase mb-2">
+              RESORT AMENITIES
+            </div>
+            <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-brand-heading leading-tight">
+              Curated experiences, <br />
+              flawlessly coordinated.
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-white border border-brand-border p-5 rounded-2xl shadow-sm">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                <h3 class="font-semibold text-sm text-brand-dark">Lotus Spa & Hydrotherapy</h3>
+              </div>
+              <p class="text-xs text-brand-muted leading-relaxed">
+                Heated plunge pools, Swedish massages, and eucalyptus steam rooms open 7:00 AM – 9:00 PM.
+              </p>
+            </div>
+
+            <div class="bg-white border border-brand-border p-5 rounded-2xl shadow-sm">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                <h3 class="font-semibold text-sm text-brand-dark">Skyline Rooftop Lounge</h3>
+              </div>
+              <p class="text-xs text-brand-muted leading-relaxed">
+                Organic farm-to-table seasonal dining and craft infusions with skyline views from 12 PM – 11 PM.
+              </p>
+            </div>
+
+            <div class="bg-white border border-brand-border p-5 rounded-2xl shadow-sm">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                <h3 class="font-semibold text-sm text-brand-dark">Executive Airport Chauffeur</h3>
+              </div>
+              <p class="text-xs text-brand-muted leading-relaxed">
+                Flight-tracked pickups in luxury hybrid sedans, ensuring direct transfer without waiting.
+              </p>
+            </div>
+
+            <div class="bg-white border border-brand-border p-5 rounded-2xl shadow-sm">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                <h3 class="font-semibold text-sm text-brand-dark">Autonomous In-Room Service</h3>
+              </div>
+              <p class="text-xs text-brand-muted leading-relaxed">
+                Order fresh towels, extra bedding, or Himalayan water via our instant service desk with live updates.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 flex justify-center lg:justify-end">
+          <div class="w-full max-w-md">
+            <div class="arch-frame aspect-[4/5] bg-stone-200 border border-brand-border shadow-xl">
+              <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1200"
+                alt="StayEase Infinity Pool" class="w-full h-full object-cover" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: VERIFIED REVIEWS & AI SENTIMENT -->
+  <section id="reviews" class="py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+      <div>
+        <div class="text-xs font-bold tracking-[0.2em] text-brand-tag uppercase mb-2">
+          GUEST TESTIMONIALS
+        </div>
+        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-brand-heading leading-tight">
+          What our guests cherish.
+        </h2>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="openCustomerPortal('review')"
+          class="bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark px-5 py-2.5 rounded-full text-xs font-semibold transition shadow-sm">
+          <i class="fa-solid fa-pen-nib mr-1"></i> Submit a Review
+        </button>
+      </div>
+    </div>
+
+    <!-- AI Review Summary Banner -->
+    <div id="reviewInsightsBanner"
+      class="bg-white border border-brand-border p-5 rounded-2xl shadow-sm mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div
+          class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-800 font-serif text-xl font-bold">
+          4.9
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-brand-dark uppercase tracking-wider">AI Sentiment Analysis</span>
+            <span class="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded-full font-bold">98%
+              Positive</span>
+          </div>
+          <p id="reviewThemesSummary" class="text-xs text-brand-muted mt-0.5">Top guest themes: Welcoming Front Desk,
+            Spotless Housekeeping, Quiet Balcony, Lotus Spa</p>
+        </div>
+      </div>
+      <div class="text-xs text-brand-lightMuted font-medium">
+        Grounded in verified database stays
+      </div>
+    </div>
+
+    <!-- Reviews Grid (Populated from MongoDB) -->
+    <div id="reviewsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Populated dynamically -->
+    </div>
+  </section>
+
+  <!-- SECTION 6: CONTACT & INSTANT INQUIRY -->
+  <section id="contact" class="py-16 md:py-24 border-t border-brand-border/60 bg-white/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+
+        <div class="lg:col-span-5 space-y-6">
+          <div>
+            <div class="text-xs font-bold tracking-[0.2em] text-brand-tag uppercase mb-2">
+              RESERVATIONS &amp; CONCIERGE
+            </div>
+            <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-brand-heading leading-tight">
+              Begin your retreat with us.
+            </h2>
+          </div>
+          <p class="text-brand-muted text-sm leading-relaxed">
+            Have custom travel requirements or planning a celebration? Share your details and our team alongside the AI
+            Concierge will assemble an ideal reservation proposal.
+          </p>
+
+          <div class="space-y-3 pt-2 text-xs font-semibold tracking-wider uppercase text-brand-dark">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+              <span>24/7 Front Desk &amp; Butler Services</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+              <span>Instant Confirmation with Reference Code</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7">
+          <div class="bg-white border border-brand-border p-6 sm:p-8 rounded-3xl shadow-sm">
+            <form id="contactInquiryForm" onsubmit="handleInquirySubmit(event)" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1">GUEST
+                    NAME</label>
+                  <input type="text" id="inquiryName" required placeholder="Priya Nair"
+                    class="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-2.5 text-xs text-brand-dark focus:outline-none focus:border-brand-borderDark" />
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1">EMAIL
+                    ADDRESS</label>
+                  <input type="email" id="inquiryEmail" required placeholder="priya@example.com"
+                    class="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-2.5 text-xs text-brand-dark focus:outline-none focus:border-brand-borderDark" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1">MESSAGE
+                  OR SPECIAL REQUEST</label>
+                <textarea id="inquiryMessage" rows="3" required
+                  placeholder="Interested in the Presidential Suite for an anniversary weekend with spa pass..."
+                  class="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-2.5 text-xs text-brand-dark focus:outline-none focus:border-brand-borderDark resize-none"></textarea>
+              </div>
+
+              <button type="submit"
+                class="w-full bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark font-semibold py-3 rounded-full text-xs transition shadow-sm">
+                Send Inquiry to Concierge
+              </button>
+            </form>
+
+            <div id="inquiryAlert"
+              class="hidden mt-4 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs text-center">
+              🎉 Thank you! Your inquiry has been registered with the StayEase Concierge team.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-brand-border bg-white py-8 text-xs text-brand-muted">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="font-serif font-semibold text-brand-dark text-base">StayEase AI</span>
+        <span>— Autonomous Hotel Booking &amp; Operations Platform</span>
+      </div>
+      <div class="text-center sm:text-right text-[11px] text-brand-lightMuted">
+        &copy; 2026 StayEase Platform. Sandbox Payment Adapter Active. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================== -->
+  <!-- MODAL 1: AUTHENTICATION (LOGIN / REGISTER / QUICK DEMO) -->
+  <!-- ============================================================== -->
+  <div id="authModal"
+    class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 modal-animated">
+    <div class="bg-white border border-brand-border w-full max-w-md rounded-3xl shadow-2xl p-6 sm:p-7 relative">
+      <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-brand-muted hover:text-brand-dark text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center mb-6">
+        <span class="font-serif text-2xl font-medium text-brand-heading" id="authModalTitle">Welcome to StayEase</span>
+        <p class="text-xs text-brand-muted mt-1" id="authModalSubtitle">Sign in to manage your stays and service
+          requests</p>
+      </div>
+
+      <!-- Quick Demo Account Shortcut Buttons -->
+      <div class="bg-brand-bg p-3 rounded-2xl border border-brand-border mb-5 text-center">
+        <span class="text-[10px] font-bold text-brand-lightMuted uppercase tracking-wider block mb-2">QUICK DEMO
+          ACCOUNTS</span>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="quickFillAuth('priya@example.com', 'guest123')"
+            class="bg-white border border-brand-border hover:border-brand-borderDark text-brand-dark py-1.5 px-2 rounded-xl text-xs font-semibold transition">
+            👤 Guest (Priya)
+          </button>
+          <button onclick="quickFillAuth('admin@stayease.com', 'admin123')"
+            class="bg-white border border-brand-border hover:border-brand-borderDark text-brand-dark py-1.5 px-2 rounded-xl text-xs font-semibold transition">
+            👑 Admin (Manager)
+          </button>
+        </div>
+      </div>
+
+      <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+        <div id="authNameField" class="hidden">
+          <label class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1">FULL
+            NAME</label>
+          <input type="text" id="authNameInput" placeholder="Priya Nair"
+            class="w-full bg-brand-bg border border-brand-border rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:outline-none focus:border-brand-borderDark" />
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1">EMAIL
+            ADDRESS</label>
+          <input type="email" id="authEmailInput" required placeholder="user@example.com"
+            class="w-full bg-brand-bg border border-brand-border rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:outline-none focus:border-brand-borderDark" />
+        </div>
+
+        <div>
+          <label
+            class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1">PASSWORD</label>
+          <input type="password" id="authPasswordInput" required placeholder="••••••••"
+            class="w-full bg-brand-bg border border-brand-border rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:outline-none focus:border-brand-borderDark" />
+        </div>
+
+        <button type="submit" id="authSubmitBtn"
+          class="w-full bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark font-semibold py-3 rounded-full text-xs transition shadow-sm">
+          Sign In
+        </button>
+      </form>
+
+      <div class="mt-4 text-center">
+        <button onclick="toggleAuthMode()" id="authToggleModeBtn"
+          class="text-xs text-brand-tag font-semibold hover:underline">
+          Don't have an account? Register here
+        </button>
+      </div>
+
+      <div id="authErrorMsg"
+        class="hidden mt-3 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs text-center"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL 2: ROOM DETAILS & SPECIFICATIONS -->
+  <!-- ============================================================== -->
+  <div id="roomDetailModal"
+    class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 modal-animated">
+    <div
+      class="bg-white border border-brand-border w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col relative">
+      <button onclick="closeRoomDetailModal()"
+        class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white/80 backdrop-blur text-brand-dark flex items-center justify-center shadow hover:bg-white transition">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+
+      <div class="h-64 sm:h-72 w-full overflow-hidden relative shrink-0">
+        <img id="detailRoomImage" src="" alt="Room detail photo" class="w-full h-full object-cover" />
+        <div
+          class="absolute bottom-4 left-4 glass-badge px-3 py-1 rounded-full text-xs font-bold text-brand-tag border border-brand-border">
+          <span id="detailRoomCategory">DELUXE</span>
+        </div>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-5">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h3 id="detailRoomName" class="font-serif text-2xl font-medium text-brand-heading">Room Name</h3>
+            <p id="detailRoomSpecs" class="text-xs text-brand-lightMuted mt-1">Room 305 • Floor 3 • King Bed • Up to 3
+              Guests</p>
+          </div>
+          <div class="text-right">
+            <span class="font-serif text-2xl font-semibold text-brand-dark" id="detailRoomPrice">₹7,280</span>
+            <span class="text-xs text-brand-muted block font-normal">/ night + GST</span>
+          </div>
+        </div>
+
+        <p id="detailRoomDescription" class="text-xs sm:text-sm text-brand-muted leading-relaxed">
+          Room description text...
+        </p>
+
+        <div>
+          <span class="text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase block mb-2">VERIFIED
+            AMENITIES</span>
+          <div id="detailRoomAmenities" class="flex flex-wrap gap-2">
+            <!-- Badges -->
+          </div>
+        </div>
+
+        <!-- Dynamic Calculator -->
+        <div class="bg-brand-bg p-4 rounded-2xl border border-brand-border space-y-3">
+          <span class="text-xs font-semibold text-brand-dark block">Estimated Nightly Stay Calculator</span>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[9px] font-bold text-brand-lightMuted uppercase mb-1">Check-In</label>
+              <input type="date" id="calcCheckIn" onchange="recalculateRoomDetailEstimate()"
+                class="w-full bg-white border border-brand-border rounded-lg px-2.5 py-1.5 text-xs text-brand-dark focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-[9px] font-bold text-brand-lightMuted uppercase mb-1">Check-Out</label>
+              <input type="date" id="calcCheckOut" onchange="recalculateRoomDetailEstimate()"
+                class="w-full bg-white border border-brand-border rounded-lg px-2.5 py-1.5 text-xs text-brand-dark focus:outline-none" />
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-xs pt-1 border-t border-brand-borderDark/40">
+            <span class="text-brand-muted"><span id="calcNightsLabel">2</span> Nights Total (incl. 12% GST):</span>
+            <span class="font-bold text-brand-dark" id="calcTotalLabel">₹16,307</span>
+          </div>
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-3">
+          <button onclick="closeRoomDetailModal()"
+            class="px-5 py-2.5 rounded-full border border-brand-border text-xs font-semibold text-brand-muted hover:text-brand-dark transition">
+            Close
+          </button>
+          <button id="detailBookBtn"
+            class="bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark px-6 py-2.5 rounded-full font-semibold text-xs transition shadow-sm">
+            Proceed to Reservation
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL 3: BOOKING, ADD-ONS & SECURE CHECKOUT -->
+  <!-- ============================================================== -->
+  <div id="bookingModal"
+    class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 modal-animated">
+    <div
+      class="bg-white border border-brand-border w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col relative">
+
+      <!-- Modal Header -->
+      <div class="bg-brand-bg px-6 py-4 border-b border-brand-border flex items-center justify-between">
+        <div>
+          <h3 class="font-serif text-xl font-medium text-brand-heading">Reserve Your Stay</h3>
+          <p class="text-xs text-brand-muted" id="bookingModalRoomName">Garden Deluxe Suite</p>
+        </div>
+        <button onclick="closeBookingModal()" class="text-brand-muted hover:text-brand-dark text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Scrollable Form -->
+      <div class="p-6 overflow-y-auto space-y-5">
+        <form id="bookingForm" onsubmit="handleBookingSubmit(event)" class="space-y-4">
+          <input type="hidden" id="bookRoomId" />
+
+          <!-- Step 1: Dates & Guests -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label
+                class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1">CHECK-IN</label>
+              <input type="date" id="bookCheckIn" required onchange="calculateBookingTotal()"
+                class="w-full bg-brand-bg border border-brand-border rounded-xl px-3 py-2 text-xs text-brand-dark focus:outline-none" />
+            </div>
+            <div>
+              <label
+                class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1">CHECK-OUT</label>
+              <input type="date" id="bookCheckOut" required onchange="calculateBookingTotal()"
+                class="w-full bg-brand-bg border border-brand-border rounded-xl px-3 py-2 text-xs text-brand-dark focus:outline-none" />
+            </div>
+            <div>
+              <label
+                class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1">GUESTS</label>
+              <select id="bookGuests"
+                class="w-full bg-brand-bg border border-brand-border rounded-xl px-3 py-2 text-xs text-brand-dark focus:outline-none">
+                <option value="1">1 Guest</option>
+                <option value="2" selected>2 Guests</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4 Guests</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Step 2: Guest Details -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1">GUEST FULL
+                NAME</label>
+              <input type="text" id="bookGuestName" required placeholder="Priya Nair"
+                class="w-full bg-brand-bg border border-brand-border rounded-xl px-3.5 py-2 text-xs text-brand-dark focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1">EMAIL FOR
+                CONFIRMATION</label>
+              <input type="email" id="bookGuestEmail" required placeholder="priya@example.com"
+                class="w-full bg-brand-bg border border-brand-border rounded-xl px-3.5 py-2 text-xs text-brand-dark focus:outline-none" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase mb-1">CONTACT
+              PHONE</label>
+            <input type="tel" id="bookGuestPhone" placeholder="+91 98765 43210"
+              class="w-full bg-brand-bg border border-brand-border rounded-xl px-3.5 py-2 text-xs text-brand-dark focus:outline-none" />
+          </div>
+
+          <!-- Step 3: Optional Add-Ons -->
+          <div>
+            <span class="text-[10px] font-bold tracking-widest text-brand-lightMuted uppercase block mb-1.5">CURATED
+              STAY ADD-ONS</span>
+            <div class="space-y-2 text-xs">
+              <label
+                class="flex items-center justify-between p-2.5 rounded-xl border border-brand-border hover:bg-brand-bg/50 cursor-pointer transition">
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="addonSpa" onchange="calculateBookingTotal()" value="2400"
+                    data-name="Lotus Spa Wellness Pass" class="rounded text-brand-dark" />
+                  <span>Lotus Spa Hydrotherapy Day Pass</span>
+                </div>
+                <span class="font-semibold text-brand-dark">+₹2,400</span>
+              </label>
+
+              <label
+                class="flex items-center justify-between p-2.5 rounded-xl border border-brand-border hover:bg-brand-bg/50 cursor-pointer transition">
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="addonTransfer" onchange="calculateBookingTotal()" value="1800"
+                    data-name="Chauffeured Airport Transfer" class="rounded text-brand-dark" />
+                  <span>Chauffeured Luxury Sedan Airport Transfer</span>
+                </div>
+                <span class="font-semibold text-brand-dark">+₹1,800</span>
+              </label>
+
+              <label
+                class="flex items-center justify-between p-2.5 rounded-xl border border-brand-border hover:bg-brand-bg/50 cursor-pointer transition">
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="addonBreakfast" onchange="calculateBookingTotal()" value="1200"
+                    data-name="Champagne Breakfast Buffet" class="rounded text-brand-dark" />
+                  <span>Artisan Champagne Breakfast Buffet</span>
+                </div>
+                <span class="font-semibold text-brand-dark">+₹1,200</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Transparent Pricing Breakdown -->
+          <div class="bg-stone-50 border border-stone-200 p-4 rounded-2xl text-xs space-y-1.5">
+            <div class="flex justify-between text-stone-600">
+              <span id="pricingBreakdownRoomLabel">Room Subtotal (2 nights):</span>
+              <span id="pricingBreakdownRoomVal">₹14,560</span>
+            </div>
+            <div class="flex justify-between text-stone-600">
+              <span>Selected Add-Ons:</span>
+              <span id="pricingBreakdownAddonVal">₹0</span>
+            </div>
+            <div class="flex justify-between text-stone-600">
+              <span>Hospitality GST (12%):</span>
+              <span id="pricingBreakdownGstVal">₹1,747</span>
+            </div>
+            <div class="flex justify-between font-bold text-stone-900 pt-1.5 border-t border-stone-200 text-sm">
+              <span>Estimated Total:</span>
+              <span id="pricingBreakdownGrandTotal">₹16,307</span>
+            </div>
+          </div>
+
+          <!-- Payment Method Selection (Mock Sandbox) -->
+          <div class="bg-brand-bg p-3.5 rounded-2xl border border-brand-border space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold text-brand-tag uppercase tracking-wider">SANDBOX MOCK PAYMENT
+                ADAPTER</span>
+              <span class="text-[10px] text-emerald-800 font-bold bg-emerald-100 px-2 py-0.5 rounded-full">Development
+                Only</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-xs">
+              <label
+                class="flex items-center gap-1.5 p-2 rounded-lg bg-white border border-brand-border cursor-pointer">
+                <input type="radio" name="payMethod" value="mock_card" checked />
+                <span>Credit Card</span>
+              </label>
+              <label
+                class="flex items-center gap-1.5 p-2 rounded-lg bg-white border border-brand-border cursor-pointer">
+                <input type="radio" name="payMethod" value="mock_upi" />
+                <span>UPI ID</span>
+              </label>
+              <label
+                class="flex items-center gap-1.5 p-2 rounded-lg bg-white border border-brand-border cursor-pointer">
+                <input type="radio" name="payMethod" value="mock_netbanking" />
+                <span>NetBanking</span>
+              </label>
+            </div>
+          </div>
+
+          <div id="bookingErrorAlert"
+            class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs text-center"></div>
+
+          <button type="submit" id="confirmBookingBtn"
+            class="w-full bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark font-semibold py-3.5 rounded-full text-xs transition shadow-sm flex items-center justify-center gap-2">
+            <i class="fa-solid fa-lock text-xs"></i>
+            <span>Confirm Booking &amp; Process Mock Payment</span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL 4: INVOICE / OFFICIAL HOSPITALITY RECEIPT -->
+  <!-- ============================================================== -->
+  <div id="invoiceModal"
+    class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 modal-animated">
+    <div
+      class="bg-white border border-brand-border w-full max-w-2xl rounded-3xl shadow-2xl p-6 sm:p-8 max-h-[92vh] overflow-y-auto relative">
+      <button onclick="closeInvoiceModal()"
+        class="absolute top-5 right-5 text-brand-muted hover:text-brand-dark text-lg print:hidden">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- Printable Container -->
+      <div id="printableInvoice" class="space-y-6">
+
+        <!-- Invoice Header -->
+        <div class="flex items-start justify-between border-b border-brand-border pb-5">
+          <div>
+            <span class="font-serif text-2xl font-medium text-brand-heading">StayEase Luxury Estate</span>
+            <p class="text-xs text-brand-muted mt-0.5">74 Heritage Ocean Promenade, Mumbai 400001</p>
+            <p class="text-[11px] text-brand-lightMuted">GSTIN: 27AABCS1429B1Z8 • Phone: +91 (022) 8000-EASE</p>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-bold text-brand-tag uppercase tracking-wider block"
+              id="invoiceNumberText">INV-849201</span>
+            <span class="text-[11px] text-brand-muted" id="invoiceDateText">Date: Oct 16, 2026</span>
+            <div
+              class="mt-2 inline-block px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase"
+              id="invoiceStatusBadge">
+              PAID &amp; CONFIRMED
+            </div>
+          </div>
+        </div>
+
+        <!-- Guest & Reservation Summary -->
+        <div class="grid grid-cols-2 gap-4 text-xs bg-brand-bg p-4 rounded-2xl border border-brand-border">
+          <div>
+            <span class="text-[10px] font-bold text-brand-lightMuted uppercase block mb-1">GUEST INFORMATION</span>
+            <p class="font-semibold text-brand-dark" id="invGuestName">Priya Nair</p>
+            <p class="text-brand-muted" id="invGuestEmail">priya@example.com</p>
+            <p class="text-brand-muted" id="invGuestPhone">+91 98765 43210</p>
+          </div>
+          <div>
+            <span class="text-[10px] font-bold text-brand-lightMuted uppercase block mb-1">RESERVATION DETAILS</span>
+            <p class="font-semibold text-brand-dark" id="invRoomName">Garden Deluxe Suite</p>
+            <p class="text-brand-muted" id="invStayDates">Check-In: Oct 20, 2026 • Check-Out: Oct 22, 2026</p>
+            <p class="text-brand-muted" id="invNightsGuests">2 Nights • 2 Guests</p>
+          </div>
+        </div>
+
+        <!-- Line Items Table -->
+        <div class="border border-brand-border rounded-2xl overflow-hidden text-xs">
+          <table class="w-full text-left">
+            <thead class="bg-brand-bg/80 border-b border-brand-border text-[10px] font-bold text-brand-tag uppercase">
+              <tr>
+                <th class="p-3">Description</th>
+                <th class="p-3 text-right">Amount (INR)</th>
+              </tr>
+            </thead>
+            <tbody id="invoiceLineItemsBody" class="divide-y divide-brand-border/60">
+              <!-- Line items injected -->
+            </tbody>
+            <tfoot class="bg-stone-50 font-semibold text-brand-dark">
+              <tr>
+                <td class="p-3 text-right">Total Paid Amount:</td>
+                <td class="p-3 text-right text-sm font-bold" id="invoiceGrandTotalText">₹16,307</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Policy Notes -->
+        <div class="text-[11px] text-brand-lightMuted border-t border-brand-border pt-4 space-y-1">
+          <p>• Free cancellation up to 48 hours prior to 2:00 PM check-in date.</p>
+          <p>• Government photo identity proof is required upon arrival for all adult guests.</p>
+          <p>• This document serves as an official tax invoice generated in development sandbox mode.</p>
+        </div>
+
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="mt-6 flex items-center justify-end gap-3 print:hidden">
+        <button onclick="window.print()"
+          class="bg-white border border-brand-border hover:bg-brand-bg text-brand-dark px-4 py-2 rounded-full text-xs font-semibold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-print"></i> Print Invoice
+        </button>
+        <button onclick="closeInvoiceModal()"
+          class="bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark px-5 py-2 rounded-full text-xs font-semibold transition">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL 5: AUTONOMOUS AI CONCIERGE DRAWER (4 MODES) -->
+  <!-- ============================================================== -->
+  <div id="aiModal"
+    class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 modal-animated">
+    <div
+      class="bg-white border border-brand-border w-full max-w-2xl rounded-3xl shadow-2xl h-[620px] flex flex-col overflow-hidden relative">
+
+      <!-- Drawer Header with Mode Tabs -->
+      <div
+        class="bg-brand-bg border-b border-brand-border p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-full bg-brand-accent flex items-center justify-center text-brand-dark text-base">
+            🌿
+          </div>
+          <div>
+            <h3 class="font-serif text-base font-medium text-brand-heading">StayEase AI Assistant</h3>
+            <p class="text-[10px] text-emerald-800 font-semibold flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              Autonomous Multi-Agent System Active
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- 4 Mode Tabs -->
+          <div class="bg-white p-1 rounded-full border border-brand-border flex text-[11px] font-semibold">
+            <button onclick="switchAIMode('concierge')" id="aiTabConcierge"
+              class="ai-mode-pill bg-brand-dark text-white px-3 py-1 rounded-full transition">
+              Concierge
+            </button>
+            <button onclick="switchAIMode('planner')" id="aiTabPlanner"
+              class="ai-mode-pill text-brand-muted hover:text-brand-dark px-3 py-1 rounded-full transition">
+              Travel Planner
+            </button>
+            <button onclick="switchAIMode('booking')" id="aiTabBooking"
+              class="ai-mode-pill text-brand-muted hover:text-brand-dark px-3 py-1 rounded-full transition">
+              Booking Assistant
+            </button>
+            <button onclick="switchAIMode('recommendations')" id="aiTabReco"
+              class="ai-mode-pill text-brand-muted hover:text-brand-dark px-3 py-1 rounded-full transition">
+              Recommender
+            </button>
+          </div>
+
+          <button onclick="closeAIModal()" class="text-brand-muted hover:text-brand-dark p-1 text-base ml-2">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Agent Activity Indicator Bar -->
+      <div id="aiActivityIndicator"
+        class="bg-brand-accent/40 border-b border-brand-border px-4 py-1.5 text-[10px] text-brand-tag font-semibold flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-microchip text-xs"></i>
+          <span id="aiActiveAgentLabel">Agent: CustomerConciergeAgent (Deterministic + LLM Hybrid)</span>
+        </div>
+        <span id="aiStatusState" class="text-emerald-800">● Ready</span>
+      </div>
+
+      <!-- Mode 1 Container: Concierge Chat -->
+      <div id="aiModeConcierge" class="ai-mode-panel flex-1 flex flex-col overflow-hidden">
+        <div id="conciergeChatMessages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-[#fafbfa] text-xs">
+          <div
+            class="bg-brand-bg p-3.5 rounded-2xl rounded-tl-none border border-brand-border max-w-[85%] text-brand-dark">
+            Hello! I am StayEase's Luxury AI Concierge. I can verify real-time room availability, policy details, Lotus
+            Spa appointments, or recommend dining at the Skyline Rooftop. How may I assist your stay?
+          </div>
+        </div>
+
+        <!-- Quick Question Chips -->
+        <div class="px-4 py-2 bg-white border-t border-brand-border/60 flex gap-2 overflow-x-auto text-[11px] shrink-0">
+          <button onclick="sendConciergeQuickQuery('What rooms are available under 10000 with breakfast?')"
+            class="bg-brand-bg hover:bg-brand-accent/50 px-3 py-1 rounded-full text-brand-dark shrink-0 transition">
+            Rooms under ₹10k
+          </button>
+          <button onclick="sendConciergeQuickQuery('What is your check-in and cancellation policy?')"
+            class="bg-brand-bg hover:bg-brand-accent/50 px-3 py-1 rounded-full text-brand-dark shrink-0 transition">
+            Check-In &amp; Policies
+          </button>
+          <button onclick="sendConciergeQuickQuery('Tell me about Lotus Spa timings and rooftop dining')"
+            class="bg-brand-bg hover:bg-brand-accent/50 px-3 py-1 rounded-full text-brand-dark shrink-0 transition">
+            Spa &amp; Dining Info
+          </button>
+        </div>
+
+        <div class="p-3 bg-white border-t border-brand-border flex items-center gap-2 shrink-0">
+          <input type="text" id="conciergeInput" placeholder="Ask anything about rooms, amenities, or policies..."
+            onkeypress="if(event.key === 'Enter') handleConciergeSend()"
+            class="flex-1 bg-brand-bg border border-brand-border rounded-full px-4 py-2 text-xs focus:outline-none focus:border-brand-borderDark" />
+          <button onclick="handleConciergeSend()"
+            class="bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark w-8 h-8 rounded-full flex items-center justify-center text-xs transition">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mode 2 Container: Travel Planner -->
+      <div id="aiModePlanner" class="ai-mode-panel hidden flex-1 p-5 overflow-y-auto space-y-4">
+        <div>
+          <h4 class="font-serif text-lg font-medium text-brand-heading">Autonomous Stay &amp; Travel Planner</h4>
+          <p class="text-xs text-brand-muted">Agent 02 designs a customized day-by-day retreat plan with transparent
+            cost estimates.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-[10px] font-bold text-brand-lightMuted uppercase mb-1">STAY DURATION</label>
+            <select id="planDays" class="w-full bg-brand-bg border border-brand-border rounded-xl p-2 text-xs">
+              <option value="2">2 Days (Weekend Getaway)</option>
+              <option value="3" selected>3 Days (Relaxed Retreat)</option>
+              <option value="4">4 Days (Grand Vacation)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-brand-lightMuted uppercase mb-1">BUDGET ESTIMATE</label>
+            <select id="planBudget" class="w-full bg-brand-bg border border-brand-border rounded-xl p-2 text-xs">
+              <option value="15000">Under ₹15,000</option>
+              <option value="25000" selected>₹25,000 (Recommended)</option>
+              <option value="40000">₹40,000 (Luxury Suite)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-brand-lightMuted uppercase mb-1">TRAVEL THEME</label>
+            <select id="planType" class="w-full bg-brand-bg border border-brand-border rounded-xl p-2 text-xs">
+              <option value="Leisure & Wellness" selected>Leisure &amp; Wellness</option>
+              <option value="Romantic Honeymoon">Romantic Honeymoon</option>
+              <option value="Family Sanctuary">Family Sanctuary</option>
+              <option value="Executive Workation">Executive Workation</option>
+            </select>
+          </div>
+        </div>
+
+        <button onclick="generateAIItinerary()"
+          class="w-full bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark py-2.5 rounded-full text-xs font-semibold transition">
+          Generate Autonomous Travel Plan
+        </button>
+
+        <div id="aiPlanOutput" class="hidden space-y-3 pt-2">
+          <!-- Injected output -->
+        </div>
+      </div>
+
+      <!-- Mode 3 Container: Booking Assistant -->
+      <div id="aiModeBooking" class="ai-mode-panel hidden flex-1 p-5 overflow-y-auto space-y-4">
+        <div>
+          <h4 class="font-serif text-lg font-medium text-brand-heading">Smart Booking Assistant</h4>
+          <p class="text-xs text-brand-muted">Agent 03 inspects reservation parameters, prevents date conflicts, and
+            explains pricing breakdowns.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] font-bold text-brand-lightMuted uppercase mb-1">SELECT ROOM</label>
+            <select id="assistRoomSelect"
+              class="w-full bg-brand-bg border border-brand-border rounded-xl p-2 text-xs"></select>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-brand-lightMuted uppercase mb-1">GUESTS</label>
+            <select id="assistGuests" class="w-full bg-brand-bg border border-brand-border rounded-xl p-2 text-xs">
+              <option value="1">1 Guest</option>
+              <option value="2" selected>2 Guests</option>
+              <option value="3">3 Guests</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] font-bold text-brand-lightMuted uppercase mb-1">CHECK-IN</label>
+            <input type="date" id="assistCheckIn"
+              class="w-full bg-brand-bg border border-brand-border rounded-xl p-2 text-xs" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-brand-lightMuted uppercase mb-1">CHECK-OUT</label>
+            <input type="date" id="assistCheckOut"
+              class="w-full bg-brand-bg border border-brand-border rounded-xl p-2 text-xs" />
+          </div>
+        </div>
+
+        <button onclick="runBookingAssistantCheck()"
+          class="w-full bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark py-2.5 rounded-full text-xs font-semibold transition">
+          Analyze Dates &amp; Prepare Booking Summary
+        </button>
+
+        <div id="aiAssistOutput" class="hidden space-y-3 pt-2"></div>
+      </div>
+
+      <!-- Mode 4 Container: Recommendation Engine -->
+      <div id="aiModeReco" class="ai-mode-panel hidden flex-1 p-5 overflow-y-auto space-y-4">
+        <div>
+          <h4 class="font-serif text-lg font-medium text-brand-heading">Personalized Recommendation Engine</h4>
+          <p class="text-xs text-brand-muted">Agent 04 ranks suites using multi-variable deterministic scoring and guest
+            preferences.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] font-bold text-brand-lightMuted uppercase mb-1">MAX NIGHTLY BUDGET</label>
+            <input type="number" id="recoBudget" value="9000"
+              class="w-full bg-brand-bg border border-brand-border rounded-xl p-2 text-xs" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-brand-lightMuted uppercase mb-1">PREFERRED CATEGORY</label>
+            <select id="recoCategory" class="w-full bg-brand-bg border border-brand-border rounded-xl p-2 text-xs">
+              <option value="">Any Category</option>
+              <option value="STANDARD">Standard</option>
+              <option value="DELUXE" selected>Deluxe</option>
+              <option value="SUITE">Suite</option>
+            </select>
+          </div>
+        </div>
+
+        <button onclick="runAIRecommendations()"
+          class="w-full bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark py-2.5 rounded-full text-xs font-semibold transition">
+          Compute Ranked Suite Matches
+        </button>
+
+        <div id="aiRecoOutput" class="space-y-3 pt-2"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL 6: CUSTOMER PORTAL (BOOKINGS, SERVICES, ITINERARIES, REVIEWS) -->
+  <!-- ============================================================== -->
+  <div id="customerPortalModal"
+    class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 modal-animated">
+    <div
+      class="bg-white border border-brand-border w-full max-w-3xl rounded-3xl shadow-2xl h-[620px] flex flex-col overflow-hidden relative">
+
+      <!-- Portal Header -->
+      <div class="bg-brand-bg border-b border-brand-border p-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-brand-tag text-white flex items-center justify-center font-bold text-xs"
+            id="portalUserAvatar">
+            P
+          </div>
+          <div>
+            <h3 class="font-serif text-lg font-medium text-brand-heading" id="portalUserNameTitle">Guest Portal</h3>
+            <p class="text-[11px] text-brand-muted" id="portalUserEmailSubtitle">priya@example.com</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Portal Tabs -->
+          <div class="bg-white p-1 rounded-full border border-brand-border flex text-[11px] font-semibold">
+            <button onclick="switchPortalTab('bookings')" id="pTabBookings"
+              class="portal-tab bg-brand-dark text-white px-3 py-1 rounded-full transition">
+              My Stays
+            </button>
+            <button onclick="switchPortalTab('services')" id="pTabServices"
+              class="portal-tab text-brand-muted hover:text-brand-dark px-3 py-1 rounded-full transition">
+              Service Requests
+            </button>
+            <button onclick="switchPortalTab('itineraries')" id="pTabItineraries"
+              class="portal-tab text-brand-muted hover:text-brand-dark px-3 py-1 rounded-full transition">
+              Saved Itineraries
+            </button>
+            <button onclick="switchPortalTab('review')" id="pTabReview"
+              class="portal-tab text-brand-muted hover:text-brand-dark px-3 py-1 rounded-full transition">
+              Write Review
+            </button>
+          </div>
+
+          <button onclick="closeCustomerPortal()" class="text-brand-muted hover:text-brand-dark p-1 text-base ml-2">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Portal Tab 1: Bookings List -->
+      <div id="portalBookingsPanel" class="portal-panel flex-1 p-5 overflow-y-auto space-y-4">
+        <div class="flex items-center justify-between">
+          <h4 class="font-serif text-base font-medium text-brand-heading">Your Reservations History</h4>
+          <span class="text-xs text-brand-muted" id="portalBookingCount">Loading stays...</span>
+        </div>
+        <div id="portalBookingsList" class="space-y-3">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- Portal Tab 2: Service Requests -->
+      <div id="portalServicesPanel" class="portal-panel hidden flex-1 p-5 overflow-y-auto space-y-4">
+        <div class="bg-brand-bg p-4 rounded-2xl border border-brand-border space-y-3">
+          <span class="text-xs font-bold text-brand-dark uppercase tracking-wider block">Submit New In-Room
+            Request</span>
+          <form id="portalServiceForm" onsubmit="handlePortalServiceSubmit(event)"
+            class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-[9px] font-bold text-brand-lightMuted uppercase mb-1">ROOM NUMBER</label>
+              <input type="text" id="svcRoomNumber" required placeholder="305"
+                class="w-full bg-white border border-brand-border rounded-xl p-2 text-xs" />
+            </div>
+            <div>
+              <label class="block text-[9px] font-bold text-brand-lightMuted uppercase mb-1">SERVICE TYPE</label>
+              <select id="svcType" class="w-full bg-white border border-brand-border rounded-xl p-2 text-xs">
+                <option value="fresh_towels">Fresh Towels</option>
+                <option value="drinking_water">Drinking Water</option>
+                <option value="housekeeping">Full Housekeeping</option>
+                <option value="extra_bedding">Extra Bedding</option>
+                <option value="maintenance">Maintenance</option>
+                <option value="late_checkout">Late Check-Out Request</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[9px] font-bold text-brand-lightMuted uppercase mb-1">NOTES</label>
+              <input type="text" id="svcNotes" placeholder="Specific instructions..."
+                class="w-full bg-white border border-brand-border rounded-xl p-2 text-xs" />
+            </div>
+            <div class="sm:col-span-3">
+              <button type="submit"
+                class="w-full bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark py-2 rounded-xl text-xs font-semibold transition">
+                Submit Request to Service Desk
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="space-y-2">
+          <span class="text-xs font-bold text-brand-dark uppercase tracking-wider block">Your Open &amp; Past
+            Tickets</span>
+          <div id="portalServicesList" class="space-y-2">
+            <!-- Injected -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Portal Tab 3: Saved Itineraries -->
+      <div id="portalItinerariesPanel" class="portal-panel hidden flex-1 p-5 overflow-y-auto space-y-4">
+        <h4 class="font-serif text-base font-medium text-brand-heading">Saved AI Itineraries</h4>
+        <div id="portalItinerariesList" class="space-y-3">
+          <!-- Injected -->
+        </div>
+      </div>
+
+      <!-- Portal Tab 4: Post Review -->
+      <div id="portalReviewPanel" class="portal-panel hidden flex-1 p-5 overflow-y-auto space-y-4">
+        <h4 class="font-serif text-base font-medium text-brand-heading">Share Your Experience</h4>
+        <p class="text-xs text-brand-muted">Your review will be analyzed by Agent 05 and published to help future
+          guests.</p>
+
+        <form id="portalReviewForm" onsubmit="handlePortalReviewSubmit(event)" class="space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] font-bold text-brand-lightMuted uppercase mb-1">RATING (1 TO 5
+                STARS)</label>
+              <select id="reviewRatingSelect"
+                class="w-full bg-brand-bg border border-brand-border rounded-xl p-2.5 text-xs font-semibold">
+                <option value="5">⭐⭐⭐⭐⭐ 5 - Exceptional</option>
+                <option value="4">⭐⭐⭐⭐ 4 - Very Good</option>
+                <option value="3">⭐⭐⭐ 3 - Average</option>
+                <option value="2">⭐⭐ 2 - Disappointing</option>
+                <option value="1">⭐ 1 - Poor</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-brand-lightMuted uppercase mb-1">HEADLINE</label>
+              <input type="text" id="reviewTitleInput" required placeholder="Unforgettable celebration stay"
+                class="w-full bg-brand-bg border border-brand-border rounded-xl p-2.5 text-xs text-brand-dark" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-brand-lightMuted uppercase mb-1">DETAILED REVIEW</label>
+            <textarea id="reviewTextInput" rows="4" required
+              placeholder="Describe what you enjoyed most about the room, concierge, dining or spa..."
+              class="w-full bg-brand-bg border border-brand-border rounded-xl p-2.5 text-xs text-brand-dark resize-none"></textarea>
+          </div>
+
+          <button type="submit"
+            class="w-full bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark py-3 rounded-full text-xs font-semibold transition">
+            Publish Verified Review
+          </button>
+        </form>
+
+        <div id="portalReviewAlert"
+          class="hidden p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs text-center">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL 7: ADMIN OPERATIONS CENTER (AGENTS 6-10 + MANAGEMENT) -->
+  <!-- ============================================================== -->
+  <div id="adminModal"
+    class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 modal-animated">
+    <div
+      class="bg-white border border-brand-border w-full max-w-5xl rounded-3xl shadow-2xl h-[680px] flex flex-col overflow-hidden relative">
+
+      <!-- Admin Center Header -->
+      <div
+        class="bg-brand-dark text-white p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 rounded-full bg-amber-400 text-brand-dark flex items-center justify-center font-bold text-sm">
+            <i class="fa-solid fa-hotel"></i>
+          </div>
+          <div>
+            <h3 class="font-serif text-lg font-medium text-white flex items-center gap-2">
+              StayEase AI Operations Center
+              <span
+                class="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[9px] px-2 py-0.5 rounded-full font-bold uppercase">Admin
+                Console</span>
+            </h3>
+            <p class="text-[10px] text-stone-300">Autonomous multi-agent oversight • Grounded in MongoDB</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Admin Center Navigation Tabs -->
+          <div
+            class="bg-stone-800 p-1 rounded-full border border-stone-700 flex text-[10px] font-semibold overflow-x-auto">
+            <button onclick="switchAdminTab('overview')" id="admTabOverview"
+              class="admin-tab bg-brand-btnPrimary text-brand-dark px-2.5 py-1 rounded-full transition">
+              Overview
+            </button>
+            <button onclick="switchAdminTab('copilot')" id="admTabCopilot"
+              class="admin-tab text-stone-300 hover:text-white px-2.5 py-1 rounded-full transition">
+              Copilot (Ag 6)
+            </button>
+            <button onclick="switchAdminTab('serviceDesk')" id="admTabServiceDesk"
+              class="admin-tab text-stone-300 hover:text-white px-2.5 py-1 rounded-full transition">
+              Service Desk (Ag 7)
+            </button>
+            <button onclick="switchAdminTab('pricing')" id="admTabPricing"
+              class="admin-tab text-stone-300 hover:text-white px-2.5 py-1 rounded-full transition">
+              Pricing (Ag 8)
+            </button>
+            <button onclick="switchAdminTab('revenue')" id="admTabRevenue"
+              class="admin-tab text-stone-300 hover:text-white px-2.5 py-1 rounded-full transition">
+              Revenue (Ag 9)
+            </button>
+            <button onclick="switchAdminTab('planner')" id="admTabPlanner"
+              class="admin-tab text-stone-300 hover:text-white px-2.5 py-1 rounded-full transition">
+              Action Plan (Ag 10)
+            </button>
+            <button onclick="switchAdminTab('approvals')" id="admTabApprovals"
+              class="admin-tab text-stone-300 hover:text-white px-2.5 py-1 rounded-full transition">
+              Approvals Queue
+            </button>
+            <button onclick="switchAdminTab('audit')" id="admTabAudit"
+              class="admin-tab text-stone-300 hover:text-white px-2.5 py-1 rounded-full transition">
+              Audit Logs
+            </button>
+            <button onclick="switchAdminTab('rooms')" id="admTabRooms"
+              class="admin-tab text-stone-300 hover:text-white px-2.5 py-1 rounded-full transition">
+              Room Manager
+            </button>
+          </div>
+
+          <button onclick="closeAdminConsole()" class="text-stone-300 hover:text-white p-1 text-base ml-2">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 1: Admin Overview KPIs -->
+      <div id="admPanelOverview" class="admin-panel flex-1 p-5 overflow-y-auto space-y-5">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-brand-bg p-4 rounded-2xl border border-brand-border text-center">
+            <span class="text-[10px] font-bold text-brand-lightMuted uppercase">OCCUPANCY RATE</span>
+            <div class="font-serif text-2xl font-bold text-brand-dark mt-1" id="kpiOccupancy">--%</div>
+          </div>
+          <div class="bg-brand-bg p-4 rounded-2xl border border-brand-border text-center">
+            <span class="text-[10px] font-bold text-brand-lightMuted uppercase">VERIFIED REVENUE</span>
+            <div class="font-serif text-2xl font-bold text-emerald-800 mt-1" id="kpiRevenue">₹--</div>
+          </div>
+          <div class="bg-brand-bg p-4 rounded-2xl border border-brand-border text-center">
+            <span class="text-[10px] font-bold text-brand-lightMuted uppercase">TODAY'S ARRIVALS</span>
+            <div class="font-serif text-2xl font-bold text-brand-dark mt-1" id="kpiArrivals">--</div>
+          </div>
+          <div class="bg-brand-bg p-4 rounded-2xl border border-brand-border text-center">
+            <span class="text-[10px] font-bold text-brand-lightMuted uppercase">OPEN SERVICE TICKETS</span>
+            <div class="font-serif text-2xl font-bold text-amber-700 mt-1" id="kpiOpenRequests">--</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white border border-brand-border p-4 rounded-2xl shadow-sm space-y-3">
+            <span class="text-xs font-bold text-brand-dark uppercase tracking-wider block">Autonomous Worker
+              Daemon</span>
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-brand-muted">Service Desk Auto-Triage:</span>
+              <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">ACTIVE (Every 60s)</span>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-brand-muted">Last Triage Pass:</span>
+              <span id="workerLastPassTime" class="font-medium text-brand-dark">Just now</span>
+            </div>
+            <button onclick="triggerManualWorkerPass()"
+              class="w-full bg-brand-bg hover:bg-brand-accent/50 border border-brand-border text-brand-dark py-1.5 rounded-xl text-xs font-semibold transition">
+              ⚡ Trigger Immediate Triage Pass
+            </button>
+          </div>
+
+          <div class="bg-white border border-brand-border p-4 rounded-2xl shadow-sm space-y-3">
+            <span class="text-xs font-bold text-brand-dark uppercase tracking-wider block">Financial Balance
+              Grounding</span>
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-brand-muted">Gross Booking Value:</span>
+              <span id="kpiGrossValue" class="font-bold text-brand-dark">₹0</span>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-brand-muted">Uncollected / Pending:</span>
+              <span id="kpiPendingBalance" class="font-bold text-amber-700">₹0</span>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-brand-muted">Live ADR (Avg Daily Rate):</span>
+              <span id="kpiADR" class="font-bold text-brand-dark">₹0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Hotel Operations Copilot (Agent 6) -->
+      <div id="admPanelCopilot" class="admin-panel hidden flex-1 flex flex-col overflow-hidden">
+        <div id="copilotChatMessages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-[#fafbfa] text-xs">
+          <div
+            class="bg-brand-bg p-3.5 rounded-2xl rounded-tl-none border border-brand-border max-w-[85%] text-brand-dark">
+            Welcome, Administrator. I am your Hotel Operations Copilot (Agent 06). I have direct authorized access to
+            real-time MongoDB bookings, financial records, room inventory, and service request queues. What operational
+            data can I pull for you?
+          </div>
+        </div>
+
+        <!-- Prompt Pills -->
+        <div class="px-4 py-2 bg-white border-t border-brand-border/60 flex gap-2 overflow-x-auto text-[11px] shrink-0">
+          <button onclick="sendCopilotQuery('How many arrivals are scheduled for today and tomorrow?')"
+            class="bg-brand-bg hover:bg-brand-accent/50 px-3 py-1 rounded-full text-brand-dark shrink-0 transition">
+            📅 Check Arrivals
+          </button>
+          <button onclick="sendCopilotQuery('Which service requests are currently open or overdue?')"
+            class="bg-brand-bg hover:bg-brand-accent/50 px-3 py-1 rounded-full text-brand-dark shrink-0 transition">
+            🚨 Overdue Service Tickets
+          </button>
+          <button onclick="sendCopilotQuery('Summarize verified collected revenue versus gross bookings')"
+            class="bg-brand-bg hover:bg-brand-accent/50 px-3 py-1 rounded-full text-brand-dark shrink-0 transition">
+            💰 Financial Summary
+          </button>
+          <button onclick="sendCopilotQuery('Show property occupancy and room status')"
+            class="bg-brand-bg hover:bg-brand-accent/50 px-3 py-1 rounded-full text-brand-dark shrink-0 transition">
+            🏨 Room Occupancy
+          </button>
+        </div>
+
+        <div class="p-3 bg-white border-t border-brand-border flex items-center gap-2 shrink-0">
+          <input type="text" id="copilotInput"
+            placeholder="Ask operational questions (e.g. 'Show arrivals tomorrow', 'Overdue maintenance', 'Revenue')..."
+            onkeypress="if(event.key === 'Enter') handleCopilotSend()"
+            class="flex-1 bg-brand-bg border border-brand-border rounded-full px-4 py-2 text-xs focus:outline-none focus:border-brand-borderDark" />
+          <button onclick="handleCopilotSend()"
+            class="bg-brand-dark hover:bg-black text-white w-8 h-8 rounded-full flex items-center justify-center text-xs transition">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 3: Autonomous Service Desk (Agent 7) -->
+      <div id="admPanelServiceDesk" class="admin-panel hidden flex-1 p-5 overflow-y-auto space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h4 class="font-serif text-base font-medium text-brand-heading">Agent 07: Autonomous Service Desk</h4>
+            <p class="text-xs text-brand-muted">Automated ticket categorization, priority scoring, staff assignment, and
+              overdue escalation.</p>
+          </div>
+          <button onclick="triggerManualWorkerPass()"
+            class="bg-brand-btnPrimary hover:bg-brand-btnPrimaryHover text-brand-dark px-3 py-1.5 rounded-full text-xs font-semibold transition">
+            Run Triage Now
+          </button>
+        </div>
+        <div id="adminServiceTicketsList" class="space-y-2"></div>
+      </div>
+
+      <!-- Tab 4: Smart Pricing Analyst (Agent 8) -->
+      <div id="admPanelPricing" class="admin-panel hidden flex-1 p-5 overflow-y-auto space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h4 class="font-serif text-base font-medium text-brand-heading">Agent 08: Smart Dynamic Pricing Analyst</h4>
+            <p class="text-xs text-brand-muted">Analyzes live occupancy, weekend surges, and seasonality. Changes remain
+              pending until approved.</p>
+          </div>
+          <button onclick="loadAdminPricingReport()"
+            class="bg-brand-bg border border-brand-border px-3 py-1.5 rounded-full text-xs font-semibold transition">
+            Refresh Analysis
+          </button>
+        </div>
+        <div id="adminPricingProposalsList" class="space-y-3"></div>
+      </div>
+
+      <!-- Tab 5: Revenue Insights Agent (Agent 9) -->
+      <div id="admPanelRevenue" class="admin-panel hidden flex-1 p-5 overflow-y-auto space-y-4">
+        <div>
+          <h4 class="font-serif text-base font-medium text-brand-heading">Agent 09: Financial &amp; Revenue Insights
+          </h4>
+          <p class="text-xs text-brand-muted">Verified financial calculations separating collected payments from unpaid
+            reservations.</p>
+        </div>
+        <div id="adminRevenueReportContainer" class="space-y-4"></div>
+      </div>
+
+      <!-- Tab 6: Admin Action Planner (Agent 10) -->
+      <div id="admPanelPlanner" class="admin-panel hidden flex-1 p-5 overflow-y-auto space-y-4">
+        <div>
+          <h4 class="font-serif text-base font-medium text-brand-heading">Agent 10: Operational Action Planner</h4>
+          <p class="text-xs text-brand-muted">Translate natural-language operational orders into structured
+            multi-department workflows with risk assessment.</p>
+        </div>
+
+        <div class="flex gap-2">
+          <input type="text" id="adminPlanInstructionInput"
+            placeholder="e.g. Prepare plan for tomorrow's arrivals and schedule housekeeping for rooms 204 and 305..."
+            class="flex-1 bg-brand-bg border border-brand-border rounded-xl px-3.5 py-2 text-xs focus:outline-none" />
+          <button onclick="generateAdminActionPlan()"
+            class="bg-brand-dark hover:bg-black text-white px-4 py-2 rounded-xl text-xs font-semibold transition">
+            Generate Plan
+          </button>
+        </div>
+
+        <div id="adminPlanResultContainer" class="hidden space-y-3 pt-2"></div>
+      </div>
+
+      <!-- Tab 7: Approval Queue -->
+      <div id="admPanelApprovals" class="admin-panel hidden flex-1 p-5 overflow-y-auto space-y-4">
+        <div>
+          <h4 class="font-serif text-base font-medium text-brand-heading">Pending Approval Queue</h4>
+          <p class="text-xs text-brand-muted">Human-in-the-loop verification required for consequential actions proposed
+            by autonomous agents.</p>
+        </div>
+        <div id="adminApprovalsList" class="space-y-3"></div>
+      </div>
+
+      <!-- Tab 8: Audit Logs -->
+      <div id="admPanelAudit" class="admin-panel hidden flex-1 p-5 overflow-y-auto space-y-4">
+        <div>
+          <h4 class="font-serif text-base font-medium text-brand-heading">AI Action Audit Trail</h4>
+          <p class="text-xs text-brand-muted">Cryptographic-style execution log of every tool execution, agent trigger,
+            and approval decision.</p>
+        </div>
+        <div class="border border-brand-border rounded-2xl overflow-hidden text-xs">
+          <table class="w-full text-left">
+            <thead class="bg-brand-bg border-b border-brand-border text-[9px] font-bold text-brand-tag uppercase">
+              <tr>
+                <th class="p-2.5">Agent</th>
+                <th class="p-2.5">Action</th>
+                <th class="p-2.5">Triggered By</th>
+                <th class="p-2.5">Status</th>
+                <th class="p-2.5">Time</th>
+              </tr>
+            </thead>
+            <tbody id="adminAuditLogsTableBody" class="divide-y divide-brand-border/60 font-mono text-[11px]"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab 9: Room Management -->
+      <div id="admPanelRooms" class="admin-panel hidden flex-1 p-5 overflow-y-auto space-y-4">
+        <div class="flex items-center justify-between">
+          <h4 class="font-serif text-base font-medium text-brand-heading">Inventory &amp; Room Management</h4>
+          <span class="text-xs text-brand-muted">Manage active status and base nightly rates</span>
+        </div>
+        <div id="adminRoomsTableContainer" class="space-y-3"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Floating Live Autonomous Activity Toast Notification Widget -->
+  <div id="liveActivityToast"
+    class="fixed bottom-6 right-6 z-40 max-w-sm pointer-events-auto transition-all duration-500 transform translate-y-0 opacity-100">
+    <div
+      class="glass-badge border border-brand-border/90 p-4 rounded-2xl shadow-2xl flex items-start gap-3 bg-white/95">
+      <div
+        class="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center shrink-0 text-brand-dark text-xs mt-0.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] font-bold text-brand-tag uppercase tracking-wider">AI Operations Feed</span>
+          <span
+            class="text-[9px] text-emerald-800 font-bold bg-emerald-100 px-1.5 py-0.2 rounded-full font-mono">Live</span>
+        </div>
+        <p id="liveToastMessage" class="text-xs text-brand-dark font-medium mt-1 leading-snug">
+          Autonomous Service Desk triaged 3 tickets • Ramesh (Housekeeping Lead) dispatched.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- StayEase full-stack application logic -->
+  <script src="/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "stayease-fullstack",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server/server.js",
+    "seed": "node server/seed.js",
+    "start": "node server/server.js"
+  },
+  "dependencies": {
+    "@google/genai": "^2.32.0",
+    "bcryptjs": "latest",
+    "cors": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "jsonwebtoken": "latest",
+    "mongoose": "latest",
+    "openai": "latest"
+  }
+}
